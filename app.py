@@ -5,7 +5,7 @@ from LLM import InternLM_LLM
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
 from openxlab.model import download
-
+import os
 # 使用镜像
 os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
 
