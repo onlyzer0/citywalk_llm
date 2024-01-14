@@ -4,6 +4,16 @@ from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from LLM import InternLM_LLM
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
+from openxlab.model import download
+
+# 使用镜像
+os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
+
+# 下载sentence-transformers
+os.system('huggingface-cli download --resume-download sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 --local-dir /home/xlab-app-center/model/sentence-transformer')
+
+# 模型下载
+download(model_repo='OpenLMLab/InternLM-chat-7b', output='/home/xlab-app-center/model/InternLM-chat-7b')
 
 def load_chain():
     # 加载问答链
