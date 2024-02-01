@@ -6,14 +6,17 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
 from openxlab.model import download
 import os
+
 # 使用镜像
 os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
 
 # 下载sentence-transformers
-os.system('huggingface-cli download --resume-download sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 --local-dir /home/xlab-app-center/model/sentence-transformer')
+os.system(
+    'huggingface-cli download --resume-download sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 --local-dir /home/xlab-app-center/model/sentence-transformer')
 
 # 模型下载
 download(model_repo='OpenLMLab/InternLM-chat-7b', output='/home/xlab-app-center/model/InternLM-chat-7b')
+
 
 def load_chain():
     # 加载问答链
@@ -30,7 +33,7 @@ def load_chain():
     )
 
     # 加载自定义 LLM
-    llm = InternLM_LLM(model_path = "/home/xlab-app-center/model/InternLM-chat-7b")
+    llm = InternLM_LLM(model_path="/home/xlab-app-center/model/InternLM-chat-7b")
 
     # 定义一个 Prompt Template
     template = """使用以下上下文来回答最后的问题。如果你不知道答案，就说你不知道，不要试图编造答
@@ -39,18 +42,20 @@ def load_chain():
     问题: {question}
     有用的回答:"""
 
-    QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context","question"],template=template)
+    QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"], template=template)
 
     # 运行 chain
-    qa_chain = RetrievalQA.from_chain_type(llm,retriever=vectordb.as_retriever(),return_source_documents=True,chain_type_kwargs={"prompt":QA_CHAIN_PROMPT})
-    
+    qa_chain = RetrievalQA.from_chain_type(llm, retriever=vectordb.as_retriever(), return_source_documents=True,
+                                           chain_type_kwargs={"prompt": QA_CHAIN_PROMPT})
+
     return qa_chain
 
 
 class Model_center():
     """
-    存储检索问答链的对象 
+    存储检索问答链的对象
     """
+
     def __init__(self):
         # 构造函数，加载检索问答链
         self.chain = load_chain()
@@ -69,12 +74,13 @@ class Model_center():
         except Exception as e:
             return e, chat_history
 
+
 # 实例化核心功能对象
 model_center = Model_center()
 # 创建一个 Web 界面
 block = gr.Blocks()
 with block as demo:
-    with gr.Row(equal_height=True):   
+    with gr.Row(equal_height=True):
         with gr.Column(scale=15):
             # 展示的页面标题
             gr.Markdown("""<h1><center>InternLM</center></h1>
@@ -95,10 +101,10 @@ with block as demo:
                 # 创建一个清除按钮，用于清除聊天机器人组件的内容。
                 clear = gr.ClearButton(
                     components=[chatbot], value="Clear console")
-                
+
         # 设置按钮的点击事件。当点击时，调用上面定义的 qa_chain_self_answer 函数，并传入用户的消息和聊天历史记录，然后更新文本框和聊天机器人组件。
         db_wo_his_btn.click(model_center.qa_chain_self_answer, inputs=[
-                            msg, chatbot], outputs=[msg, chatbot])
+            msg, chatbot], outputs=[msg, chatbot])
 
     gr.Markdown("""提醒：<br>
     1. 初始化数据库时间可能较长，请耐心等待。
