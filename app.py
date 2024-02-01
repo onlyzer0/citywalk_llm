@@ -17,7 +17,7 @@ os.system(
 # 模型下载
 download(model_repo='OpenLMLab/InternLM-chat-7b', output='/home/xlab-app-center/model/InternLM-chat-7b')
 
-
+os.system('xtuner convert merge /home/xlab-app-center/model/InternLM-chat-7b ./hf ./merged --max-shard-size 2GB')
 def load_chain():
     # 加载问答链
     # 定义 Embeddings
@@ -33,11 +33,11 @@ def load_chain():
     )
 
     # 加载自定义 LLM
-    llm = InternLM_LLM(model_path="/home/xlab-app-center/model/InternLM-chat-7b")
+    llm = InternLM_LLM(model_path="./merged")
 
     # 定义一个 Prompt Template
     template = """使用以下上下文来回答最后的问题。如果你不知道答案，就说你不知道，不要试图编造答
-    案。尽量使答案简明扼要。总是在回答的最后说“谢谢你的提问！”。
+    案。根据问题提取上下文的关键信息，简明地回答问题。总是在回答的最后说“谢谢你的提问！”。
     {context}
     问题: {question}
     有用的回答:"""
