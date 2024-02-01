@@ -1,5 +1,4 @@
 modelscope==1.9.5
-transformers==4.35.2
 streamlit==1.24.0
 sentencepiece==0.1.99
 accelerate==0.24.1
@@ -9,6 +8,7 @@ chromadb==0.4.15
 sentence-transformers==2.2.2
 unstructured==0.10.30
 markdown==3.3.7
+transformers==4.34.0
 openxlab
 huggingface_hub
 xtuner==0.1.9
