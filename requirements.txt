@@ -13,4 +13,4 @@ pysqlite3
 openxlab
 huggingface_hub
 xtuner
-pysqlite3
+pysqlite3-binary
