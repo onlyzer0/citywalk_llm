@@ -1,3 +1,6 @@
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 import gradio as gr
 from langchain.vectorstores import Chroma
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
@@ -6,9 +9,7 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
 from openxlab.model import download
 import os
-__import__('pysqlite3')
-import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
 # 使用镜像
 os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
 
