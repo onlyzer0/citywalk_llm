@@ -9,6 +9,7 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
 from openxlab.model import download
 import os
+from transformers import AutoTokenizer, AutoModelForCausalLM
 
 # 使用镜像
 os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
@@ -36,7 +37,11 @@ def load_chain():
     )
 
     # 加载自定义 LLM
-    llm = InternLM_LLM(model_path="/root/merged")
+    model_name_or_path = "/root/merged"
+    tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, trust_remote_code=True)
+    llm = AutoModelForCausalLM.from_pretrained(model_name_or_path, trust_remote_code=True, torch_dtype=torch.bfloat16, device_map='auto')
+    llm = llm.eval()
+ 
 
     # 定义一个 Prompt Template
     template = """使用以下上下文来回答最后的问题。如果你不知道答案，就说你不知道，不要试图编造答
